@@ -20,7 +20,7 @@ class Piece:
         if self.color == ColorConstant.RED:
             return colored.red(self.shape)
         elif self.color == ColorConstant.BLUE:
-            return colored.blue(self.shape)
+            return colored.white(self.shape)
         elif self.color == ColorConstant.BLACK:
             return colored.green(self.shape)
 
