@@ -5,7 +5,7 @@ from src.utility import place
 from src.constant import GameConstant, ShapeConstant
 
 class Node:
-    def __init__(self, depth, state: State, value) -> None:
+    def __init__(self, depth: int, state: State, value: int) -> None:
         self.depth : int = depth
         self.state : State = state
         self.children : Node.array = []
@@ -18,7 +18,7 @@ class Node:
             xState = State(xBoard, xPlayers, self.state.round+1)
             xrow = place(xState, (self.state.round+1)%2, ShapeConstant.CROSS, i)
             if (xrow >= 0):
-                self.children.append(Node(self.depth+1, xState), 0) 
+                self.children.append(Node(self.depth+1, xState, 0)) 
             else :
                 self.children.append(None)
                 
@@ -28,14 +28,32 @@ class Node:
             oState = State(oBoard, oPlayers, self.state.round+1)
             orow = place(oState, (self.state.round+1)%2, ShapeConstant.CIRCLE, i)
             if (orow >= 0):
-                self.children.append(Node(self.depth+1, oState), 0)
+                self.children.append(Node(self.depth+1, oState, 0))
             else :
                 self.children.append(None)
     
     # def getLeaves(self):
+    def printTree(self):
+        if len(self.children)==0:
+            print(self.depth*"   " + str(self.value))
+        else:
+            print(self.depth*"   " + str(self.value))
+            if (self.depth >= 2):
+                for node in self.children:
+                    if node :
+                        node.printTree()
+            else:
+                self.children[0].printTree()
+        
+
+    def __str__(self) :
+        res = "Depth : " + str(self.depth) + " | "
+        res += "Value : " + str(self.value) + "\n"
+        return res
+
 
 def createTree(node: Node, maxDepth: int):
-    if node.depth < maxDepth:
+    if node and node.depth < maxDepth:
         node.initChild()
         
         for aNode in node.children:

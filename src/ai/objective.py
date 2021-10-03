@@ -1,6 +1,6 @@
 from src.model import Piece, Board, State, Player
 from src.constant import ColorConstant, ShapeConstant, GameConstant
-from src.utility import is_out, place, is_out
+from src.utility import is_out, place
 
 
 def getEmptyAdj(state: State, row: int, col: int):
@@ -17,9 +17,10 @@ def getEmptyAdj(state: State, row: int, col: int):
     ret = []
 
     for cell in adj_cell:
-        if is_out(state.board, row + cell[0], col + cell[1]):
-            continue
-        elif state.board[row + cell[0], col + cell[1]].shape == ShapeConstant.BLANK:
+        if (
+            (row + cell[0] >= state.board.row or col + cell[1] < 0 or col + cell[1] >= state.board.col)
+            or (state.board[row + cell[0], col + cell[1]].shape == ShapeConstant.BLANK)
+        ):
             ret.append(cell)
 
     return ret
@@ -64,7 +65,8 @@ def countStreak(
     [RETURN]
         int -> streaks value
     """
-    streakScore = [0,1,4,10]
+    ownStreak = [0,1,4,100,1000]
+    enemyStreak = [0,-1,-8,-1000,-1000]
     score = 0
     currShape = state.board[row, col].shape
     currColor = state.board[row, col].color
@@ -81,8 +83,8 @@ def countStreak(
             ].shape
         ):
             streak += 1
-        # print("streak di cek bentuk",streak,"yg lg di cek",row,col)
-        score += (streakScore[streak-1] * (-1 if playerShape != currShape else 1))
+        
+        score += (enemyStreak[min(streak,4)-1] if playerShape != currShape else ownStreak[min(streak,4)-1])
 
         # COUNT BASED ON COLOR
         streak = 1
@@ -95,12 +97,12 @@ def countStreak(
         ):
             streak += 1
 
-        score += (streakScore[streak-1] * (-1 if playerColor != currColor else 1))
+        score += (enemyStreak[min(streak,4)-1] if playerColor != currColor else ownStreak[min(streak,4)-1])
     
     return score
 
 
-def countObjective(state: State):
+def countObjective(state: State, isCurPlayer: bool = True):
     """
     [DESC]
         Function to count objective value for the state
@@ -111,7 +113,7 @@ def countObjective(state: State):
     """
 
     objValue = 0
-    curPlayer = state.players[state.round - 1 % 2]
+    curPlayer = state.players[(state.round + (1 if isCurPlayer else 0)) % 2]
 
     for row in range(state.board.row):
         for col in range(state.board.col):

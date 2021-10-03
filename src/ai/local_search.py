@@ -26,7 +26,7 @@ class LocalSearch:
     def hillclimbing(self, state: State, n_player: int):
         # for every state, count objective, get max or min value from state, return that state
         # cek kuota
-        playerquota = self.state.players[n_player].quota
+        playerquota = state.players[n_player].quota
         circle = playerquota[ShapeConstant.CIRCLE]
         cross = playerquota[ShapeConstant.CROSS]
         # isi semua kemungkinan move
@@ -47,28 +47,20 @@ class LocalSearch:
                 listofstates[i] = heuristic
 
         # print(listofstates)
-        ronde = state.round
-        if ronde % 2 == 1:
-            maks = True
-        else:
-            maks = False
+        # ronde = state.round
+        # if ronde % 2 == 1:
+        #     maks = True
+        # else:
+        #     maks = False
 
         ekstrim = listofstates[0]  # ini ganti max atau min
-        ans = [
-            random.randint(0, 7),
-            random.choice([ShapeConstant.CROSS, ShapeConstant.CIRCLE]),
-        ]
-        if maks:
-            for i in listofstates:
-                value = listofstates[i]
-                if value > ekstrim:
-                    ekstrim = value
-                    ans = listofmoves[i]
-        else:
-            for i in listofstates:
-                value = listofstates[i]
-                if value < ekstrim:
-                    ekstrim = value
-                    ans = listofmoves[i]
-        # print("ans",ans)
+        ans = listofmoves[0]
+
+        for i in listofstates:
+            value = listofstates[i]
+            if value > ekstrim:
+                ekstrim = value
+                ans = listofmoves[i]
+
+        print("ans",ans,listofstates)
         return ans
