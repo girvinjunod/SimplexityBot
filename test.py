@@ -1,7 +1,7 @@
 from src.model import State, Board, Player
 from src.utility import place
 from src.constant import GameConstant, ShapeConstant
-from src.ai.objective import countObjective, countStreak
+from src.ai.objective import countObjective
 from src.ai.local_search import LocalSearch
 
 import random
@@ -63,7 +63,7 @@ def hillclimbing(state: State, n_player: int):
 
 
 if __name__ == "__main__":
-    board = Board(7, 6)
+    board = Board(6, 7)
     # print(board)
     n_quota = 7 * 6
     quota = [
@@ -80,18 +80,29 @@ if __name__ == "__main__":
         Player(GameConstant.PLAYER1_SHAPE, GameConstant.PLAYER1_COLOR, quota[0]),
         Player(GameConstant.PLAYER2_SHAPE, GameConstant.PLAYER2_COLOR, quota[1]),
     ]
-    state = State(Board(7, 6), players, 1)
-    place(state, 0, GameConstant.PLAYER1_SHAPE, 0)
+    state = State(Board(6, 7), players, 1)
     place(state, 1, GameConstant.PLAYER1_SHAPE, 1)
-    place(state, 0, GameConstant.PLAYER2_SHAPE, 0)
-    place(state, 1, GameConstant.PLAYER1_SHAPE, 0)
-    place(state, 0, GameConstant.PLAYER2_SHAPE, 1)
-    place(state, 1, GameConstant.PLAYER2_SHAPE, 1)
-    # place(state, 0, GameConstant.PLAYER2_SHAPE, 0)
-    # place(state, 0, GameConstant.PLAYER1_SHAPE, 2)
-    # print(state.board[6, 0].shape)
-    
-    print("now")
-    hillclimbing(state, 1)
     print(state.board)
+    print(countObjective(state))
+    print(state.board[3,1].shape)
+
+    place(state, 1, GameConstant.PLAYER1_SHAPE, 1)
+    print(state.board)
+    print(countObjective(state))
+    print(state.board[3,1].shape)
+
+    place(state, 1, GameConstant.PLAYER1_SHAPE, 1)
+    print(state.board)
+    print(countObjective(state))
+    print(state.board[3,1].shape)
+
+    place(state, 0, GameConstant.PLAYER2_SHAPE, 2)
+    print(state.board)
+    print(countObjective(state))
+    print(state.board[3,1].shape)
+    
+    place(state, 0, GameConstant.PLAYER2_SHAPE, 3)
+    print(state.board)
+    print(countObjective(state))
+    print(state.board[3,1].shape)
     # print(countObjective(state))

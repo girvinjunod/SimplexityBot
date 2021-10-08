@@ -12,7 +12,7 @@ from typing import Tuple, List
 
 
 class Minimax:
-    def __init__(self, max_depth = 4):
+    def __init__(self, max_depth = 3):
         self.max_depth: int = max_depth
 
     def minimaxAlphaBeta(
@@ -23,7 +23,7 @@ class Minimax:
 
         #Kalo ketemu daun
         if node.depth == self.max_depth:
-            return countObjective(node.state, False) #musuh
+            return countObjective(node.state, True) #musuh
 
         if isMaximizing:
             maxVal = -9999
