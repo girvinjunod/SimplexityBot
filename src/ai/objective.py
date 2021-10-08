@@ -120,7 +120,7 @@ def countObjective(state : State, isCurPlayer : bool = True) :
                     except :
                         break
 
-    listScore = [0,1,2,3,10,0,0,0]
+    listScore = [0,1,2,3,100,100,100,100]
     listEnemyScore = [0,1,2,5,1000,0,0,0]
     # Counting objective value
     for streak in listStreak :
