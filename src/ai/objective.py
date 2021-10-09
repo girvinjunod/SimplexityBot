@@ -44,6 +44,9 @@ def getEmptyAdj(state: State, row: int, col: int):
         except :
             pass
 
+    if not(ret) :
+        return []
+
     if (1, -1) in ret :
         try : ret.remove((0,-1))
         except :pass
@@ -73,71 +76,64 @@ def countObjective(state : State, isCurPlayer : bool = True) :
     listStreak = []
 
     for col in range(state.board.col) :
-        # Initiating list row idx
-        listRowIdx = []
         for row in range(state.board.row-1,-1,-1) :
             if state.board[row,col].shape != ShapeConstant.BLANK :
-                ret = getEmptyAdj(state, row, col)
-                if ret :
-                    listRowIdx.append(row)
-        
-        # Counting Streak
-        for rowIdx in listRowIdx :
-            tmpAdjCell = getEmptyAdj(state, rowIdx, col)
-            for cell in tmpAdjCell :
-                # Streak count on shape
-                streak = 1
-                tmpRow = rowIdx
-                tmpCol = col
-                while True :
-                    try :
-                        if state.board[tmpRow, tmpCol].shape == curPlayer.shape :
-                            multiplier = 1
-                        elif state.board[tmpRow, tmpCol].shape == enemyPlayer.shape :
-                            multiplier = -1
+                tmpAdjCell = getEmptyAdj(state, row, col)
+                if tmpAdjCell :
+                    for cell in tmpAdjCell :
+                        # Streak count on shape
+                        streak = 1
+                        tmpRow = row
+                        tmpCol = col
+                        while True :
+                            try :
+                                if state.board[tmpRow, tmpCol].shape == curPlayer.shape :
+                                    multiplier = 1
+                                elif state.board[tmpRow, tmpCol].shape == enemyPlayer.shape :
+                                    multiplier = -1
 
-                        if (
-                            tmpRow + (cell[0] * -1) >= 0 and 
-                            tmpRow + (cell[0] * -1) < state.board.row and 
-                            tmpCol + (cell[1] * -1) >= 0 and 
-                            tmpCol + (cell[1] * -1) < state.board.col and 
-                            state.board[tmpRow + (cell[0] * -1), tmpCol + (cell[1] * -1)].shape == state.board[tmpRow, tmpCol].shape
-                        ) :
-                            streak += 1
-                            tmpRow += (cell[0] * -1)
-                            tmpCol += (cell[1] * -1)
-                        else :
-                            listStreak.append(streak * multiplier)
-                            break
-                    except :
-                        break
-                # Streak count on color
-                streak = 1
-                tmpRow = rowIdx
-                tmpCol = col
-                while True :
-                    try :
-                        if state.board[tmpRow, tmpCol].color == curPlayer.color :
-                            multiplier = 1
-                        elif state.baord[tmpRow, tmpCol].color == enemyPlayer.color :
-                            multiplier = -1
+                                if (
+                                    tmpRow + (cell[0] * -1) >= 0 and 
+                                    tmpRow + (cell[0] * -1) < state.board.row and 
+                                    tmpCol + (cell[1] * -1) >= 0 and 
+                                    tmpCol + (cell[1] * -1) < state.board.col and 
+                                    state.board[tmpRow + (cell[0] * -1), tmpCol + (cell[1] * -1)].shape == state.board[tmpRow, tmpCol].shape
+                                ) :
+                                    streak += 1
+                                    tmpRow += (cell[0] * -1)
+                                    tmpCol += (cell[1] * -1)
+                                else :
+                                    listStreak.append(streak * multiplier)
+                                    break
+                            except :
+                                break
+                        # Streak count on color
+                        streak = 1
+                        tmpRow = row
+                        tmpCol = col
+                        while True :
+                            try :
+                                if state.board[tmpRow, tmpCol].color == curPlayer.color :
+                                    multiplier = 1
+                                elif state.baord[tmpRow, tmpCol].color == enemyPlayer.color :
+                                    multiplier = -1
 
-                        if (
-                            tmpRow + cell[0] * -1 >= 0 and 
-                            tmpRow + cell[0] * -1 < state.board.row and 
-                            tmpCol + cell[1] * -1 >= 0 and 
-                            tmpCol + cell[1] * -1 < state.board.col and 
-                            state.board[tmpRow + (cell[0] * -1), tmpCol + (cell[1] * -1)].color == state.board[tmpRow, tmpCol].color
-                        ) :
-                            streak += 1
-                            tmpRow += cell[0] * -1
-                            tmpCol += cell[1] * -1
-                        else :
-                            listStreak.append(streak * multiplier)
-                            streak = 1
-                            break
-                    except :
-                        break
+                                if (
+                                    tmpRow + cell[0] * -1 >= 0 and 
+                                    tmpRow + cell[0] * -1 < state.board.row and 
+                                    tmpCol + cell[1] * -1 >= 0 and 
+                                    tmpCol + cell[1] * -1 < state.board.col and 
+                                    state.board[tmpRow + (cell[0] * -1), tmpCol + (cell[1] * -1)].color == state.board[tmpRow, tmpCol].color
+                                ) :
+                                    streak += 1
+                                    tmpRow += cell[0] * -1
+                                    tmpCol += cell[1] * -1
+                                else :
+                                    listStreak.append(streak * multiplier)
+                                    streak = 1
+                                    break
+                            except :
+                                break
 
     listScore = [0,4,10,50,10000,10000,10000,10000]
     # Counting objective value

@@ -87,6 +87,29 @@ class Node:
 
 
 def createTree(node: Node, maxDepth: int):
+    # if abs(node.value)<1000:
+    #     node.initChild()
+    # current: Node = node
+    # stack: Node.Array = current.children
+    # n_child: int = 0
+    # while True:
+    #     current = stack.pop()
+    #     if not current.children and current.depth < maxDepth and abs(current.value)<1000:
+    #         current.initChild()
+    #         stack.append(current)
+
+    #         current = current.children[0]
+    #     else:
+    #         n_child += 1
+    #         if (n_child < 6):
+    #             current = stack.pop()
+    #             current = current.children[n_child]
+    #             # stack.append(current.children[n_child])
+    #         else:
+    #             n_child = 0
+    #             current = None
+    #     break
+
     if node and node.depth < maxDepth:
         if abs(node.value) < 10000: 
             node.initChild()

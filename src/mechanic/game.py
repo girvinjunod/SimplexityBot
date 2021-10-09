@@ -127,7 +127,7 @@ class Game:
 
             self.state.round += 1
             winner = is_win(self.state.board)
-            if winner or self.state.round==24:
+            if winner:
                 print(self.state.board)
                 break
             if is_full(self.state.board):

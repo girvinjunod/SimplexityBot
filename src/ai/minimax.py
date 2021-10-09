@@ -1,5 +1,6 @@
 import random
 from time import time
+from multiprocessing import Process, Manager
 
 from src.constant import ShapeConstant, GameConstant
 from src.utility import place, check_streak
@@ -15,12 +16,13 @@ WIN_SCORE = 10000
 LOSE_SCORE = -10000
 
 class Minimax:
-    def __init__(self, max_depth = 5):
+    def __init__(self, max_depth = 5, startTime = 0):
         self.max_depth: int = max_depth
 
     def minimaxAlphaBeta(
-        self, node: Node, depth: int, isMaximizing: bool, alpha: int, beta: int
+        self, node: Node, depth: int, isMaximizing: bool, alpha: int, beta: int, currTime: float
     ):
+
         if not node :
             return None
 
@@ -34,7 +36,7 @@ class Minimax:
 
             for child in node.children:
                 if child : # check if not null
-                    currVal = self.minimaxAlphaBeta(child, depth + 1, False, alpha, beta)
+                    currVal = self.minimaxAlphaBeta(child, depth + 1, False, alpha, beta, time())
                     if (abs(child.value) != 10000):
                         child.value = currVal 
                     maxVal = max(maxVal, child.value)
@@ -42,13 +44,16 @@ class Minimax:
                     if alpha >= beta:
                         # maxVal = WIN_SCORE
                         break
+                    # if (currTime - self.startTime > 0) :
+                    #     print("too long")
+                    #     break
             return maxVal
         else:
             minVal = WIN_SCORE
 
             for child in node.children:
                 if child : 
-                    currVal = self.minimaxAlphaBeta(child, depth + 1, True, alpha, beta)
+                    currVal = self.minimaxAlphaBeta(child, depth + 1, True, alpha, beta, time())
                     if (abs(child.value) != 10000):
                         child.value = currVal
                     minVal = min(minVal, child.value)
@@ -56,6 +61,9 @@ class Minimax:
                     if alpha >= beta:
                         # minVal = LOSE_SCORE
                         break
+                    # if (currTime - self.startTime > 0) :
+                    #     print("too long")
+                    #     break
             return minVal
 
     def find(
@@ -68,10 +76,25 @@ class Minimax:
         # print(state.board)
 
         # Make tree
+        # return_dict = Manager.dict()
+        self.startTime = time()
         root = Node(1, state, -999)
-        createTree(root, 5)
-        self.minimaxAlphaBeta(root, 1, True, -999, 999)
+        createTree(root, self.max_depth)
+        self.minimaxAlphaBeta(root, 1, True, LOSE_SCORE, WIN_SCORE, self.startTime)
 
+        # p = Process(target=Minimax.minimaxAlphaBeta, args = (self, root, 1, True, LOSE_SCORE, WIN_SCORE))
+        # root.printTree()
+        # p.start()
+        # print("started p")
+        # print(thinking_time)
+        # p.join(thinking_time)
+        # print("joined p")
+
+        # if p.is_alive() :
+        #     print("too long, killing..")
+        #     p.terminate()
+        #     return random.randint(0, state.board.col)
+        # else :
         childStateIdxToMove = 0
         bestObjVal = -999
         print("obj value depth 2 : ", end="")
