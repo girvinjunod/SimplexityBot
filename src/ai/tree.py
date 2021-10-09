@@ -1,8 +1,11 @@
 import copy
 import time
 from src.model import State,Board,Player
-from src.utility import place
+from src.utility import place, is_win
 from src.constant import GameConstant, ShapeConstant
+
+WIN_SCORE = 10000
+LOSE_SCORE = -10000
 
 class Node:
     def __init__(self, depth: int, state: State, value: int) -> None:
@@ -17,8 +20,23 @@ class Node:
             xPlayers = copy.deepcopy(self.state.players)
             xState = State(xBoard, xPlayers, self.state.round+1)
             xrow = place(xState, (self.state.round+1)%2, ShapeConstant.CROSS, i)
+
             if (xrow >= 0):
-                self.children.append(Node(self.depth+1, xState, 0)) 
+                win_condition = is_win(xState.board)
+
+                # if (xState.round>=7 and xrow==5 and i==1):
+                #     print("DIBAWAH INI PRINT", str(xState.round))
+                #     print(win_condition, xState.board[xrow, i].shape)
+                #     print(xState.board)
+
+                value = 0
+                if win_condition != None:
+                    # print(win_condition)
+                    shape, color = win_condition
+                    winner =  ((self.state.players[1].shape == shape) 
+                        and (self.state.players[1].color == color)) 
+                    value = WIN_SCORE if winner else LOSE_SCORE
+                self.children.append(Node(self.depth+1, xState, value)) 
             else :
                 self.children.append(None)
                 
@@ -27,8 +45,23 @@ class Node:
             oPlayers = copy.deepcopy(self.state.players)
             oState = State(oBoard, oPlayers, self.state.round+1)
             orow = place(oState, (self.state.round+1)%2, ShapeConstant.CIRCLE, i)
+
             if (orow >= 0):
-                self.children.append(Node(self.depth+1, oState, 0))
+                win_condition = is_win(oState.board)
+
+                # if (oState.round>=7 and orow==5 and i==1):
+                #     print("DIBAWAH INI PRINT", str(oState.round))
+                #     print(win_condition, oState.board[orow, i].shape)
+                #     print(oState.board)
+                
+                value = 0
+                if win_condition != None:
+                    # print(win_condition)
+                    shape, color = win_condition
+                    winner =  ((self.state.players[1].shape == shape) 
+                        and (self.state.players[1].color == color)) 
+                    value = WIN_SCORE if winner else LOSE_SCORE
+                self.children.append(Node(self.depth+1, xState, value)) 
             else :
                 self.children.append(None)
     
@@ -38,12 +71,13 @@ class Node:
             print(self.depth*"   " + str(self.value))
         else:
             print(self.depth*"   " + str(self.value))
+            # if self.value == 40:
             if (self.depth >= 2):
                 for node in self.children:
                     if node :
                         node.printTree()
             else:
-                self.children[0].printTree()
+                self.children[11].printTree()
         
 
     def __str__(self) :
@@ -54,10 +88,10 @@ class Node:
 
 def createTree(node: Node, maxDepth: int):
     if node and node.depth < maxDepth:
-        node.initChild()
-        
-        for aNode in node.children:
-            createTree(aNode,maxDepth)
+        if abs(node.value) < 10000: 
+            node.initChild()
+            for aNode in node.children:
+                createTree(aNode,maxDepth)
 
 
 if __name__=="__main__":

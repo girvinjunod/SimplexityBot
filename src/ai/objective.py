@@ -44,6 +44,25 @@ def getEmptyAdj(state: State, row: int, col: int):
         except :
             pass
 
+    if (1, -1) in ret :
+        try : ret.remove((0,-1))
+        except :pass
+        try :ret.remove((-1,-1))
+        except :pass
+    if (1, 1) in ret :
+        try : ret.remove((0, 1))
+        except : pass
+        try : ret.remove((-1, 1)) 
+        except : pass
+    if not((1,-1) in ret) :
+        if (0,-1) in ret :
+            try : ret.remove((-1,-1))
+            except : pass
+    if not((1,1) in ret) :
+        if (0,1) in ret :
+            try : ret.remove((-1,1))
+            except : pass
+
     return ret
 
 def countObjective(state : State, isCurPlayer : bool = True) :
@@ -120,8 +139,7 @@ def countObjective(state : State, isCurPlayer : bool = True) :
                     except :
                         break
 
-    listScore = [0,1,2,3,100,100,100,100]
-    listEnemyScore = [0,1,2,5,1000,0,0,0]
+    listScore = [0,4,10,50,10000,10000,10000,10000]
     # Counting objective value
     for streak in listStreak :
         if streak < 0 :

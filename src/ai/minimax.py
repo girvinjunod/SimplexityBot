@@ -2,7 +2,7 @@ import random
 from time import time
 
 from src.constant import ShapeConstant, GameConstant
-from src.utility import place, is_win
+from src.utility import place, check_streak
 from src.model import State, Board, Player
 from src.ai.tree import Node, createTree
 
@@ -11,8 +11,11 @@ from src.ai.objective import countObjective
 from typing import Tuple, List
 
 
+WIN_SCORE = 10000
+LOSE_SCORE = -10000
+
 class Minimax:
-    def __init__(self, max_depth = 3):
+    def __init__(self, max_depth = 5):
         self.max_depth: int = max_depth
 
     def minimaxAlphaBeta(
@@ -22,33 +25,36 @@ class Minimax:
             return None
 
         #Kalo ketemu daun
-        if node.depth == self.max_depth:
-            return countObjective(node.state, True) #musuh
+        if node.depth == self.max_depth: #BASIS
+            return countObjective(node.state, True) # musuh
 
+        #REKURENS
         if isMaximizing:
-            maxVal = -9999
+            maxVal = LOSE_SCORE
+
             for child in node.children:
                 if child : # check if not null
                     currVal = self.minimaxAlphaBeta(child, depth + 1, False, alpha, beta)
-                    child.value = currVal 
-                    if (abs(currVal) >= 500) :
-                        break
-                    maxVal = max(maxVal, currVal)
+                    if (abs(child.value) != 10000):
+                        child.value = currVal 
+                    maxVal = max(maxVal, child.value)
                     alpha = max(alpha, maxVal)
                     if alpha >= beta:
+                        # maxVal = WIN_SCORE
                         break
             return maxVal
         else:
-            minVal = 9999
+            minVal = WIN_SCORE
+
             for child in node.children:
                 if child : 
                     currVal = self.minimaxAlphaBeta(child, depth + 1, True, alpha, beta)
-                    child.value = currVal 
-                    if (currVal <= -500) :
-                        break
-                    minVal = min(minVal, currVal)
+                    if (abs(child.value) != 10000):
+                        child.value = currVal
+                    minVal = min(minVal, child.value)
                     beta = min(beta, minVal)
                     if alpha >= beta:
+                        # minVal = LOSE_SCORE
                         break
             return minVal
 
@@ -63,7 +69,7 @@ class Minimax:
 
         # Make tree
         root = Node(1, state, -999)
-        createTree(root, self.max_depth)
+        createTree(root, 5)
         self.minimaxAlphaBeta(root, 1, True, -999, 999)
 
         childStateIdxToMove = 0
@@ -84,8 +90,9 @@ class Minimax:
         else:
             shapeToMove = ShapeConstant.CIRCLE
         
-        if (state.round == 22) :
-            root.printTree()
+        # if (state.round == 6) :
+        #     print("print tree :")
+        #     root.printTree()
 
         # root.printTree()
         return (colToMove, shapeToMove)
