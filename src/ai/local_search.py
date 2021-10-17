@@ -1,15 +1,13 @@
 import random
 import copy
-from time import time
+import time
 
+from random import randrange
 from src.constant import ShapeConstant
 from src.model import State
 from src.utility import place
 from src.ai.objective import countObjective
 from typing import Tuple, List
-
-# from src.ai.objective import getTopRow
-
 
 class LocalSearch:
     def __init__(self):
@@ -17,13 +15,12 @@ class LocalSearch:
 
     # ngitung heuristik untuk tiap pilihan trus ambil aja
     def find(self, state: State, n_player: int, thinking_time: float) -> Tuple[str, str]:
-        self.thinking_time = time() + thinking_time
-
-        best_movement = self.hillclimbing(state, n_player)
+        best_movement = self.hillclimbing(state, n_player, thinking_time)
 
         return best_movement
 
-    def hillclimbing(self, state: State, n_player: int):
+    def hillclimbing(self, state: State, n_player: int, thinking_time: float):
+        start = time.time()
         # for every state, count objective, get max or min value from state, return that state
         # cek kuota
         playerquota = state.players[n_player].quota
@@ -37,8 +34,13 @@ class LocalSearch:
             if circle > 0:
                 listofmoves.append([i, ShapeConstant.CIRCLE])
         # print(listofmoves)
+
+        
         listofstates = {}
         for i in range(len(listofmoves)):
+            end = time.time()
+            if (end - start > thinking_time):
+                return listofmoves[random.randrange(0, len(listofmoves))]
             temp = copy.deepcopy(state)  # copy to temp state
 
             valid = place(temp, n_player, listofmoves[i][1], listofmoves[i][0])
@@ -53,7 +55,7 @@ class LocalSearch:
         # else:
         #     maks = False
 
-        ekstrim = listofstates[0]  # ini ganti max atau min
+        ekstrim = listofstates[0]
         ans = listofmoves[0]
 
         for i in listofstates:
