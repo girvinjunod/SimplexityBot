@@ -52,7 +52,3 @@ You can change the config in run.bat
  --bot1 <str>
  --bot2 <str>
 ```
-
-## ✔️ Acknowledgement
-
-This project is used for an assignment from IF3170 Artificial Intelligence 2021/2022
