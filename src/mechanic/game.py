@@ -1,7 +1,7 @@
 import pickle
-from time import time
+import time
 
-from src.ai import Minimax,LocalSearch
+from src.ai import *
 from src.model import Board, Player, State, Config
 from src.constant import ShapeConstant, GameConstant, Path
 from src.utility import is_out, is_win, is_full, place
@@ -44,8 +44,8 @@ class Game:
         if self.config.game_type == GameConstant.BVB:
             if not self.config.is_dump:
                 # You can change model used here
-                model1 = LocalSearch()
-                model2 = Minimax()
+                model1 = MinimaxGroup1()
+                model2 = LocalSearchGroup1()
             else:
                 # Don't change this
                 model1 = pickle.load(open(Path.BVB_P1, "rb"))
@@ -56,7 +56,7 @@ class Game:
         elif self.config.game_type == GameConstant.PVB:
             if not self.config.is_dump:
                 # You can change model used here
-                model = Minimax()
+                model = MinimaxGroup1()
             else:
                 # Don't change this
                 model = pickle.load(open(Path.PVB, "rb"))
@@ -86,21 +86,21 @@ class Game:
                 if player_turn == self.config.player_choice:
                     choosen_col, choosen_shape = self.__input()
                 else:
-                    start = time()
+                    start = time.time()
                     choosen_col, choosen_shape = self.bot[player_turn].find(
                         self.state, player_turn, self.config.thinking_time
                     )
-                    print(f'Runtime: {time() - start}')
+                    print(f'Runtime: {time.time() - start}')
 
             elif self.config.game_type == GameConstant.PVP:
                 choosen_col, choosen_shape = self.__input()
 
             else:  # BVB
-                start = time()
+                start = time.time()
                 choosen_col, choosen_shape = self.bot[player_turn].find(
                     self.state, player_turn, self.config.thinking_time
                 )
-                print(f'Runtime: {time() - start}')
+                print(f'Runtime: {time.time() - start}')
 
             
             if self.__is_valid(choosen_col, choosen_shape):
