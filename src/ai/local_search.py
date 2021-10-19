@@ -217,5 +217,5 @@ class LocalSearchGroup1:
                 ekstrim = value
                 ans = listofmoves[i]
 
-        print("ans",ans,listofstates)
+        # print("ans",ans,listofstates)
         return ans
