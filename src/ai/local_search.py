@@ -6,7 +6,6 @@ from random import randrange
 from src.constant import ShapeConstant
 from src.model import State
 from src.utility import place, is_win
-from src.ai.objective import countObjective
 from typing import Tuple, List
 
 '''
