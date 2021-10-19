@@ -300,19 +300,22 @@ class MinimaxGroup1:
             
         root = return_dict["root"]
         childStateIdxToMove = 0
-        bestObjVal = -999
-        # print("obj value depth 2 : ", end="")
+        bestObjVal = LOSE_SCORE - 1
+        print("obj value depth 2 : ", end="")
         for i in range(state.board.col*2):
-            # if root.children[i]:
-            #     print(str(i) + ":" + str(root.children[i].value) + " | ", end="")
+            if root.children[i]:
+                print(str(i) + ":" + str(root.children[i].value) + " | ", end="")
             if root.children[i] and (root.children[i].value > bestObjVal): 
                 bestObjVal = root.children[i].value
                 childStateIdxToMove = i
-        # print()
-
+        print()
+        
         colToMove = childStateIdxToMove // 2
         if childStateIdxToMove % 2 == 0:
             shapeToMove = ShapeConstant.CROSS
         else:
             shapeToMove = ShapeConstant.CIRCLE
+
+        print("col to move : ", colToMove)
+        print("shape to move : ", shapeToMove)
         return (colToMove, shapeToMove)

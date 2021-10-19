@@ -138,7 +138,10 @@ def countObjective(state : State, isCurPlayer : bool = True) :
     # Counting objective value
     for streak in listStreak :
         if streak < 0 :
-            objVal -= listScore[streak * -1]
+            if streak <= -2 :
+                objVal -= listScore[streak * -1] * 2
+            else :
+                objVal -= listScore[streak * -1]
         else :
             objVal += listScore[streak]
 
@@ -217,5 +220,5 @@ class LocalSearchGroup1:
                 ekstrim = value
                 ans = listofmoves[i]
 
-        # print("ans",ans,listofstates)
+        print("ans",ans,listofstates)
         return ans
