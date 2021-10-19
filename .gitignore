@@ -6,6 +6,10 @@ __pycache__/
 # C extensions
 *.so
 
+# Extra Files
+src/ai/tree.py
+src/ai/objective.py
+
 # Distribution / packaging
 .Python
 build/
